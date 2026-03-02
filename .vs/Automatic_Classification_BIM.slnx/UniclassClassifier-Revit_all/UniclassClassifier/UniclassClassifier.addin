@@ -1,0 +1,15 @@
+﻿<RevitAddIns>
+    <AddIn Type="Application">
+        <Name>UniclassClassifier</Name>
+        <Assembly>UniclassClassifier\UniclassClassifier.dll</Assembly>
+        <AddInId>E2088E92-7B1B-43DC-A06A-B5BFDC33B155</AddInId>
+        <FullClassName>UniclassClassifier.Application</FullClassName>
+        <VendorId>Development</VendorId>
+        <VendorDescription></VendorDescription>
+        <VendorEmail></VendorEmail>
+    </AddIn>
+    <ManifestSettings>
+        <UseRevitContext>False</UseRevitContext>
+        <ContextName>UniclassClassifier</ContextName>
+    </ManifestSettings>
+</RevitAddIns>

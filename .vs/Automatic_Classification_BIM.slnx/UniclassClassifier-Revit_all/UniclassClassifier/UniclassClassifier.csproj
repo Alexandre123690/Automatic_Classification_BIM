@@ -1,0 +1,170 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <UseWPF>true</UseWPF>
+        <Nullable>enable</Nullable>
+        <LangVersion>latest</LangVersion>
+        <PlatformTarget>x64</PlatformTarget>
+        <ImplicitUsings>true</ImplicitUsings>
+        <EnableDynamicLoading>true</EnableDynamicLoading>
+        <Configurations>Debug R21;Debug R22;Debug R23;Debug R24;Debug R25;Debug R26</Configurations>
+        <Configurations>$(Configurations);Release R21;Release R22;Release R23;Release R24;Release R25;Release R26</Configurations>
+    </PropertyGroup>
+	
+
+	<!-- Revit configuration -->
+    <PropertyGroup Condition="$(Configuration.Contains('R21'))">
+        <RevitVersion>2021</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R22'))">
+        <RevitVersion>2022</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R23'))">
+        <RevitVersion>2023</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R24'))">
+        <RevitVersion>2024</RevitVersion>
+        <TargetFramework>net48</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R25'))">
+        <RevitVersion>2025</RevitVersion>
+        <TargetFramework>net8.0-windows</TargetFramework>
+    </PropertyGroup>
+    <PropertyGroup Condition="$(Configuration.Contains('R26'))">
+        <RevitVersion>2026</RevitVersion>
+        <TargetFramework>net8.0-windows</TargetFramework>
+    </PropertyGroup>
+
+    <!-- Launch configuration for Debug -->
+    <PropertyGroup Condition="$(Configuration.Contains('Debug'))">
+        <StartAction>Program</StartAction>
+        <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
+        <StartArguments>/language ENG</StartArguments>
+    </PropertyGroup>
+    
+    <!-- Launch configuration for Release -->
+    <PropertyGroup Condition="$(Configuration.Contains('Release'))">
+        <StartAction>Program</StartAction>
+        <StartProgram>C:\Program Files\Autodesk\Revit $(RevitVersion)\Revit.exe</StartProgram>
+        <StartArguments>/language ENG</StartArguments>
+    </PropertyGroup>
+
+    <!-- Build configuration -->
+    <!-- https://github.com/Nice3point/Revit.Build.Tasks -->
+    <PropertyGroup>
+        <IsRepackable>false</IsRepackable>
+        <DeployRevitAddin>true</DeployRevitAddin>
+    </PropertyGroup>
+    <ItemGroup>
+      <None Remove="Resources\Icons\icon.png" />
+      <None Remove="Resources\Icons\icon2.png" />
+      <None Remove="Resources\Icons\icon3.png" />
+      <None Remove="Scripts\predict_and_return.py" />
+      <None Remove="Scripts\install_dependencies.bat" />
+      <None Remove="Temp\Ss_tabela_rows.json" />
+    </ItemGroup>
+    <ItemGroup>
+      <Content Include="Scripts\predict_and_return.py">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Scripts\install_dependencies.bat">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+      <Content Include="Temp\Ss_tabela_rows.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+    <ItemGroup>
+      <Resource Include="Resources\Icons\icon2.png" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <!-- Revit References -->
+        <PackageReference Include="CsvHelper" Version="33.1.0" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Nice3point.Revit.Build.Tasks" Version="3.0.1" />
+        <PackageReference Include="Nice3point.Revit.Toolkit" Version="$(RevitVersion).*" />
+        <PackageReference Include="Nice3point.Revit.Extensions" Version="$(RevitVersion).*" />
+        <PackageReference Include="Nice3point.Revit.Api.RevitAPI" Version="$(RevitVersion).*" />
+        <PackageReference Include="Nice3point.Revit.Api.RevitAPIUI" Version="$(RevitVersion).*" />
+    </ItemGroup>
+
+    <!-- Reference for .NET Framework 4.8 -->
+    <ItemGroup Condition="'$(TargetFramework)' == 'net48'">
+      <Reference Include="System.Windows.Forms" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <Resource Include="Resources\Icons\icon.png" />
+        <Resource Include="Resources\Icons\icon3.png" />
+        <Resource Include="Resources\Icons\RibbonIcon16.png" />
+        <Resource Include="Resources\Icons\RibbonIcon32.png" />
+    </ItemGroup>
+
+    <Target Name="CopyScriptsAndModelsToRoaming" AfterTargets="Build">
+        <PropertyGroup>
+            <RoamingBase>$(APPDATA)\Autodesk\Revit\Addins\$(RevitVersion)\UniclassClassifier</RoamingBase>
+            <ScriptsSource>$(ProjectDir)Scripts\*.py</ScriptsSource>
+            <BatchSource>$(ProjectDir)Scripts\*.bat</BatchSource>
+            <ModelsSource>$(ProjectDir)Temp\*.pkl</ModelsSource>
+            <JsonSource>$(ProjectDir)Temp\Ss_tabela_rows.json</JsonSource>
+            <PythonSource>$(ProjectDir)Python\**\*.*</PythonSource>
+            <ScriptsDest>$(RoamingBase)\Scripts</ScriptsDest>
+            <ModelsDest>$(RoamingBase)\Temp</ModelsDest>
+            <PythonDest>$(RoamingBase)\Python</PythonDest>
+        </PropertyGroup>
+
+        <!-- Cria as pastas de destino se não existirem -->
+        <MakeDir Directories="$(ScriptsDest)" Condition="!Exists('$(ScriptsDest)')" />
+        <MakeDir Directories="$(ModelsDest)" Condition="!Exists('$(ModelsDest)')" />
+        <MakeDir Directories="$(PythonDest)" Condition="!Exists('$(PythonDest)') AND $(Configuration.Contains('Release'))" />
+
+        <!-- Copia os .py -->
+        <ItemGroup>
+            <PyFiles Include="$(ScriptsSource)" />
+        </ItemGroup>
+        <Copy
+            SourceFiles="@(PyFiles)"
+            DestinationFolder="$(ScriptsDest)"
+            SkipUnchangedFiles="true" />
+
+        <!-- Copia os .bat (apenas em Debug) -->
+        <ItemGroup Condition="$(Configuration.Contains('Debug'))">
+            <BatchFiles Include="$(BatchSource)" />
+        </ItemGroup>
+        <Copy
+            SourceFiles="@(BatchFiles)"
+            DestinationFolder="$(ScriptsDest)"
+            SkipUnchangedFiles="true"
+            Condition="$(Configuration.Contains('Debug'))" />
+
+        <!-- Copia os .pkl -->
+        <ItemGroup>
+            <PklFiles Include="$(ModelsSource)" />
+        </ItemGroup>
+        <Copy
+            SourceFiles="@(PklFiles)"
+            DestinationFolder="$(ModelsDest)"
+            SkipUnchangedFiles="true" />
+
+        <!-- Copia o JSON de descrições -->
+        <Copy
+            SourceFiles="$(JsonSource)"
+            DestinationFolder="$(ModelsDest)"
+            SkipUnchangedFiles="true" />
+        
+        <!-- Copia Python empacotado (apenas em Release, se existir) -->
+        <ItemGroup Condition="$(Configuration.Contains('Release')) AND Exists('$(ProjectDir)Python')">
+            <PythonFiles Include="$(PythonSource)" />
+        </ItemGroup>
+        <Copy
+            SourceFiles="@(PythonFiles)"
+            DestinationFolder="$(PythonDest)\%(RecursiveDir)"
+            SkipUnchangedFiles="true"
+            Condition="$(Configuration.Contains('Release')) AND Exists('$(ProjectDir)Python')" />
+    </Target>
+
+</Project>

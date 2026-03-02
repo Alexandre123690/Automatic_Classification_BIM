@@ -1,0 +1,200 @@
+<Window x:Class="UniclassClassifier.Windows.ClassificationConfigWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Uniclass Classification Settings" 
+        Height="630" 
+        Width="500"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="NoResize"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="SubHeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#34495E"/>
+            <Setter Property="Margin" Value="0,10,0,5"/>
+        </Style>
+
+        <Style x:Key="DescriptionTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="Foreground" Value="#7F8C8D"/>
+            <Setter Property="TextWrapping" Value="Wrap"/>
+            <Setter Property="Margin" Value="0,0,0,5"/>
+        </Style>
+
+        <Style x:Key="SliderStyle" TargetType="Slider">
+            <Setter Property="Minimum" Value="0"/>
+            <Setter Property="Maximum" Value="100"/>
+            <Setter Property="TickFrequency" Value="10"/>
+            <Setter Property="IsSnapToTickEnabled" Value="True"/>
+            <Setter Property="Margin" Value="0,5,0,5"/>
+        </Style>
+
+        <Style x:Key="ButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="35"/>
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="BorderThickness" Value="0"/>
+            <Setter Property="Margin" Value="5"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="20">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header Section -->
+        <StackPanel Grid.Row="0" Margin="0,0,0,20">
+            <TextBlock Text="Classification Confidence Settings" 
+                       Style="{StaticResource HeaderTextStyle}"/>
+            <TextBlock Text="Configure the confidence thresholds for hierarchical classification. Elements will be classified based on these criteria:"
+                       Style="{StaticResource DescriptionTextStyle}"/>
+        </StackPanel>
+
+        <!-- Info Panel -->
+        <Border Grid.Row="1" 
+                Background="White" 
+                BorderBrush="#BDC3C7" 
+                BorderThickness="1" 
+                CornerRadius="5" 
+                Padding="15"
+                Margin="0,0,0,20">
+            <StackPanel>
+                <TextBlock Text="Classification Hierarchy" 
+                           Style="{StaticResource SubHeaderTextStyle}"/>
+                
+                <TextBlock Style="{StaticResource DescriptionTextStyle}">
+                    <Run Text="Group Threshold: " FontWeight="SemiBold"/>
+                    <Run Text="Minimum confidence required to proceed to group classification (Ss_XX)"/>
+                </TextBlock>
+                
+                <TextBlock Style="{StaticResource DescriptionTextStyle}">
+                    <Run Text="Subgroup Threshold: " FontWeight="SemiBold"/>
+                    <Run Text="Minimum confidence required for a more detailed classification, with subgroup (Ss_XX_XX)"/>
+                </TextBlock>
+                
+                <TextBlock Style="{StaticResource DescriptionTextStyle}" Margin="0,10,0,0"
+                           Text="Elements below Group threshold will be marked as 'unclassified'. Elements between thresholds will use Subgroup classification."/>
+                <TextBlock Style="{StaticResource DescriptionTextStyle}" Margin="0,10,0,0"
+                           Text="We recommend that you keep the default values and adjust them according to the results."/>
+            </StackPanel>
+        </Border>
+
+        <!-- Configuration Section -->
+        <Border Grid.Row="2" 
+                Background="White" 
+                BorderBrush="#BDC3C7" 
+                BorderThickness="1" 
+                CornerRadius="5" 
+                Padding="15">
+            <StackPanel>
+                <!-- Level 1 Threshold -->
+                <TextBlock Text="Group Confidence Threshold"
+                           Style="{StaticResource SubHeaderTextStyle}"/>
+                
+                <Grid Margin="0,5,0,15">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Slider x:Name="Level1Slider" 
+                            Grid.Column="0"
+                            Style="{StaticResource SliderStyle}"
+                            Value="20"
+                            ValueChanged="Slider_ValueChanged"/>
+                    
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center"
+                                Margin="15,0,0,0">
+                        <TextBlock x:Name="Level1ValueText" 
+                                   Text="20" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1A1A1A"
+                                   MinWidth="30"
+                                   TextAlignment="Right"/>
+                        <TextBlock Text="%" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1A1A1A"
+                                   Margin="2,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- Level 2 Threshold -->
+                <TextBlock Text="Subgroup Confidence Threshold"
+                           Style="{StaticResource SubHeaderTextStyle}"/>
+                
+                <Grid Margin="0,5,0,0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                    </Grid.ColumnDefinitions>
+                    
+                    <Slider x:Name="Level2Slider" 
+                            Grid.Column="0"
+                            Style="{StaticResource SliderStyle}"
+                            Value="40"
+                            ValueChanged="Slider_ValueChanged"/>
+                    
+                    <StackPanel Grid.Column="1" 
+                                Orientation="Horizontal" 
+                                VerticalAlignment="Center"
+                                Margin="15,0,0,0">
+                        <TextBlock x:Name="Level2ValueText" 
+                                   Text="40" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1A1A1A"
+                                   MinWidth="30"
+                                   TextAlignment="Right"/>
+                        <TextBlock Text="%" 
+                                   FontSize="16" 
+                                   FontWeight="Bold" 
+                                   Foreground="#1A1A1A"
+                                   Margin="2,0,0,0"/>
+                    </StackPanel>
+                </Grid>
+            </StackPanel>
+        </Border>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="3" Margin="0,20,0,0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="CancelButton" 
+                    Grid.Column="0"
+                    Content="Cancel" 
+                    Style="{StaticResource ButtonStyle}"
+                    Background="#95A5A6"
+                    Foreground="White"
+                    Click="CancelButton_Click"/>
+
+            <Button x:Name="StartButton" 
+                    Grid.Column="1"
+                    Content="Start Classification" 
+                    Style="{StaticResource ButtonStyle}"
+                    Background="#27AE60"
+                    Foreground="White"
+                    Click="StartButton_Click"/>
+        </Grid>
+    </Grid>
+</Window>

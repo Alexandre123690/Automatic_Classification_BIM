@@ -1,0 +1,525 @@
+<Window x:Class="UniclassClassifier.Windows.ClassificationResultsWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Classification Results" 
+        Height="700" 
+        Width="1100"
+        WindowStartupLocation="CenterScreen"
+        ResizeMode="CanResize"
+        Background="#F5F5F5">
+
+    <Window.Resources>
+        <Style x:Key="HeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="18"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,0,0,15"/>
+        </Style>
+
+        <Style x:Key="SectionHeaderStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="#34495E"/>
+            <Setter Property="Margin" Value="0,0,0,10"/>
+        </Style>
+
+        <Style x:Key="StatTextStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="12"/>
+            <Setter Property="Foreground" Value="#2C3E50"/>
+            <Setter Property="Margin" Value="0,3,0,3"/>
+        </Style>
+
+        <Style x:Key="StatValueStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="13"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+            <Setter Property="Margin" Value="0,3,0,3"/>
+        </Style>
+
+        <Style x:Key="StatLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="10"/>
+            <Setter Property="Foreground" Value="#7F8C8D"/>
+            <Setter Property="Margin" Value="0,0,0,2"/>
+        </Style>
+
+        <Style x:Key="BarLabelStyle" TargetType="TextBlock">
+            <Setter Property="FontSize" Value="11"/>
+            <Setter Property="FontWeight" Value="SemiBold"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Margin" Value="8,0,0,0"/>
+        </Style>
+    </Window.Resources>
+
+    <Grid Margin="25">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- Header -->
+        <StackPanel Grid.Row="0">
+            <TextBlock Text="Classification Summary" 
+                       Style="{StaticResource HeaderTextStyle}"/>
+            <TextBlock Text="Review the automated classification results below. The system has analyzed your BIM elements and assigned Uniclass codes. You can consolidate classifications by type or view detailed results for each element." 
+                       FontSize="11" 
+                       Foreground="#7F8C8D" 
+                       TextWrapping="Wrap"
+                       LineHeight="16"
+                       Margin="0,0,0,15"/>
+        </StackPanel>
+
+        <!-- Main Content - Horizontal Layout -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Margin="0,0,0,15">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="15"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
+
+                <!-- LEFT COLUMN -->
+                <StackPanel Grid.Column="0">
+                    <!-- Overview Section -->
+                    <Border Background="White" 
+                            BorderBrush="#BDC3C7" 
+                            BorderThickness="1" 
+                            CornerRadius="5" 
+                            Padding="15"
+                            Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="Overview" 
+                                       Style="{StaticResource SectionHeaderStyle}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Total Elements Processed:"/>
+                                <TextBlock x:Name="TotalElementsText" 
+                                           Grid.Row="0" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#1A1A1A"
+                                           Text="0"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Processing Time:"/>
+                                <TextBlock x:Name="ProcessingTimeText" 
+                                           Grid.Row="1" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#1A1A1A"
+                                           Text="0.0s"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Classification Results -->
+                    <Border Background="White" 
+                            BorderBrush="#BDC3C7" 
+                            BorderThickness="1" 
+                            CornerRadius="5" 
+                            Padding="15"
+                            Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="Classification Results" 
+                                       Style="{StaticResource SectionHeaderStyle}"/>
+
+                            <Grid Margin="0,0,0,10">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <!-- Header Row -->
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text=""/>
+                                <TextBlock Grid.Row="0" Grid.Column="1" 
+                                           Text="N elements" 
+                                           Style="{StaticResource StatLabelStyle}" 
+                                           TextAlignment="Center"
+                                           Margin="10,0,20,5"/>
+                                <TextBlock Grid.Row="0" Grid.Column="2" 
+                                           Text="Percentage" 
+                                           Style="{StaticResource StatLabelStyle}" 
+                                           TextAlignment="Center"
+                                           Margin="0,0,0,5"/>
+
+                                <!-- Subgroup (first) -->
+                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Subgroup Classification:"/>
+                                <TextBlock x:Name="Level2CountText" 
+                                           Grid.Row="1" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#9B59B6"
+                                           Text="0"
+                                           TextAlignment="Center"
+                                           Margin="10,3,20,3"/>
+                                <TextBlock x:Name="Level2PercentText" 
+                                           Grid.Row="1" Grid.Column="2"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#7F8C8D"
+                                           Text="0.0%"
+                                           TextAlignment="Center"
+                                           Margin="0,3,0,3"/>
+
+                                <!-- Group (second) -->
+                                <TextBlock Grid.Row="2" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Group Classification:"/>
+                                <TextBlock x:Name="Level1CountText" 
+                                           Grid.Row="2" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#3498DB"
+                                           Text="0"
+                                           TextAlignment="Center"
+                                           Margin="10,3,20,3"/>
+                                <TextBlock x:Name="Level1PercentText" 
+                                           Grid.Row="2" Grid.Column="2"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#7F8C8D"
+                                           Text="0.0%"
+                                           TextAlignment="Center"
+                                           Margin="0,3,0,3"/>
+
+                                <!-- Unclassified (last) -->
+                                <TextBlock Grid.Row="3" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Unclassified:"/>
+                                <TextBlock x:Name="UnclassifiedCountText" 
+                                           Grid.Row="3" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#E74C3C"
+                                           Text="0"
+                                           TextAlignment="Center"
+                                           Margin="10,3,20,3"/>
+                                <TextBlock x:Name="UnclassifiedPercentText" 
+                                           Grid.Row="3" Grid.Column="2"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#7F8C8D"
+                                           Text="0.0%"
+                                           TextAlignment="Center"
+                                           Margin="0,3,0,3"/>
+                            </Grid>
+
+                            <!-- Progress Bars with Labels -->
+                            <StackPanel Margin="0,10,0,0">
+                                <!-- Subgroup Bar -->
+                                <StackPanel Margin="0,8,0,8">
+                                    <TextBlock Text="Subgroup Classification" 
+                                               FontSize="11" 
+                                               FontWeight="SemiBold"
+                                               Foreground="#9B59B6"
+                                               Margin="0,0,0,3"/>
+                                    <Grid>
+                                        <Border Background="#ECF0F1" 
+                                                Height="26" 
+                                                CornerRadius="4"
+                                                BorderBrush="#BDC3C7"
+                                                BorderThickness="1"/>
+                                        <Border x:Name="Level2Bar" 
+                                                Background="#9B59B6" 
+                                                Height="26" 
+                                                CornerRadius="4"
+                                                HorizontalAlignment="Left"
+                                                BorderBrush="#8E44AD"
+                                                BorderThickness="1">
+                                            <TextBlock x:Name="Level2BarText" 
+                                                       Style="{StaticResource BarLabelStyle}"/>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Group Bar -->
+                                <StackPanel Margin="0,8,0,8">
+                                    <TextBlock Text="Group Classification" 
+                                               FontSize="11" 
+                                               FontWeight="SemiBold"
+                                               Foreground="#3498DB"
+                                               Margin="0,0,0,3"/>
+                                    <Grid>
+                                        <Border Background="#ECF0F1" 
+                                                Height="26" 
+                                                CornerRadius="4"
+                                                BorderBrush="#BDC3C7"
+                                                BorderThickness="1"/>
+                                        <Border x:Name="Level1Bar" 
+                                                Background="#3498DB" 
+                                                Height="26" 
+                                                CornerRadius="4"
+                                                HorizontalAlignment="Left"
+                                                BorderBrush="#2980B9"
+                                                BorderThickness="1">
+                                            <TextBlock x:Name="Level1BarText" 
+                                                       Style="{StaticResource BarLabelStyle}"/>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+
+                                <!-- Unclassified Bar -->
+                                <StackPanel Margin="0,8,0,8">
+                                    <TextBlock Text="Unclassified" 
+                                               FontSize="11" 
+                                               FontWeight="SemiBold"
+                                               Foreground="#E74C3C"
+                                               Margin="0,0,0,3"/>
+                                    <Grid>
+                                        <Border Background="#ECF0F1" 
+                                                Height="26" 
+                                                CornerRadius="4"
+                                                BorderBrush="#BDC3C7"
+                                                BorderThickness="1"/>
+                                        <Border x:Name="UnclassifiedBar" 
+                                                Background="#E74C3C" 
+                                                Height="26" 
+                                                CornerRadius="4"
+                                                HorizontalAlignment="Left"
+                                                BorderBrush="#C0392B"
+                                                BorderThickness="1">
+                                            <TextBlock x:Name="UnclassifiedBarText" 
+                                                       Style="{StaticResource BarLabelStyle}"/>
+                                        </Border>
+                                    </Grid>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+
+                <!-- RIGHT COLUMN -->
+                <StackPanel Grid.Column="2">
+                    <!-- Confidence Distribution -->
+                    <Border Background="White" 
+                            BorderBrush="#BDC3C7" 
+                            BorderThickness="1" 
+                            CornerRadius="5" 
+                            Padding="15"
+                            Margin="0,0,0,15">
+                        <StackPanel>
+                            <TextBlock Text="Confidence Distribution" 
+                                       Style="{StaticResource SectionHeaderStyle}"/>
+
+                            <Grid Margin="0,10,0,0">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <!-- Group Pie Chart -->
+                                <StackPanel Grid.Column="0" HorizontalAlignment="Center">
+                                    <TextBlock Text="Group Classification" 
+                                               Style="{StaticResource StatTextStyle}"
+                                               TextAlignment="Center"
+                                               FontWeight="SemiBold"
+                                               Margin="0,0,0,10"/>
+                                    
+                                    <!-- Pie Chart Canvas -->
+                                    <Canvas Width="120" Height="120" Margin="0,0,0,5">
+                                        <!-- Background Circle -->
+                                        <Ellipse Width="120" Height="120" 
+                                                 Fill="#ECF0F1" 
+                                                 Stroke="#BDC3C7" 
+                                                 StrokeThickness="2"/>
+                                        
+                                        <!-- High Confidence Segment (Green) -->
+                                        <Path x:Name="GroupHighConfPie" 
+                                              Fill="#27AE60" 
+                                              Stroke="White" 
+                                              StrokeThickness="2"/>
+                                        
+                                        <!-- Low Confidence Segment (Red) -->
+                                        <Path x:Name="GroupLowConfPie" 
+                                              Fill="#E74C3C" 
+                                              Stroke="White" 
+                                              StrokeThickness="2"/>
+                                    </Canvas>
+                                    
+                                    <!-- Values -->
+                                    <StackPanel Margin="0,5,0,0">
+                                        <TextBlock TextAlignment="Center" FontSize="10">
+                                            <Run Text="High: " FontWeight="SemiBold" Foreground="#27AE60"/>
+                                            <Run x:Name="GroupHighConfText" FontWeight="Bold" Foreground="#27AE60" Text="0"/>
+                                        </TextBlock>
+                                        <TextBlock TextAlignment="Center" FontSize="10">
+                                            <Run Text="Low: " FontWeight="SemiBold" Foreground="#E74C3C"/>
+                                            <Run x:Name="GroupLowConfText" FontWeight="Bold" Foreground="#E74C3C" Text="0"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+
+                                <!-- Subgroup Pie Chart -->
+                                <StackPanel Grid.Column="1" HorizontalAlignment="Center">
+                                    <TextBlock Text="Subgroup Classification" 
+                                               Style="{StaticResource StatTextStyle}"
+                                               TextAlignment="Center"
+                                               FontWeight="SemiBold"
+                                               Margin="0,0,0,10"/>
+                                    
+                                    <!-- Pie Chart Canvas -->
+                                    <Canvas Width="120" Height="120" Margin="0,0,0,5">
+                                        <!-- Background Circle -->
+                                        <Ellipse Width="120" Height="120" 
+                                                 Fill="#ECF0F1" 
+                                                 Stroke="#BDC3C7" 
+                                                 StrokeThickness="2"/>
+                                        
+                                        <!-- High Confidence Segment (Green) -->
+                                        <Path x:Name="SubgroupHighConfPie" 
+                                              Fill="#27AE60" 
+                                              Stroke="White" 
+                                              StrokeThickness="2"/>
+                                        
+                                        <!-- Low Confidence Segment (Red) -->
+                                        <Path x:Name="SubgroupLowConfPie" 
+                                              Fill="#E74C3C" 
+                                              Stroke="White" 
+                                              StrokeThickness="2"/>
+                                    </Canvas>
+                                    
+                                    <!-- Values -->
+                                    <StackPanel Margin="0,5,0,0">
+                                        <TextBlock TextAlignment="Center" FontSize="10">
+                                            <Run Text="High: " FontWeight="SemiBold" Foreground="#27AE60"/>
+                                            <Run x:Name="SubgroupHighConfText" FontWeight="Bold" Foreground="#27AE60" Text="0"/>
+                                        </TextBlock>
+                                        <TextBlock TextAlignment="Center" FontSize="10">
+                                            <Run Text="Low: " FontWeight="SemiBold" Foreground="#E74C3C"/>
+                                            <Run x:Name="SubgroupLowConfText" FontWeight="Bold" Foreground="#E74C3C" Text="0"/>
+                                        </TextBlock>
+                                    </StackPanel>
+                                </StackPanel>
+                            </Grid>
+
+                            <!-- Single Centered Legend -->
+                            <StackPanel Orientation="Horizontal" 
+                                        HorizontalAlignment="Center" 
+                                        Margin="0,15,0,5">
+                                <StackPanel Orientation="Horizontal" Margin="0,0,15,0">
+                                    <Rectangle Width="14" Height="14" Fill="#27AE60" Margin="0,0,5,0"/>
+                                    <TextBlock FontSize="11" VerticalAlignment="Center" Foreground="#555">
+                                        <Run Text="High (&gt;50%)"/>
+                                    </TextBlock>
+                                </StackPanel>
+                                <StackPanel Orientation="Horizontal">
+                                    <Rectangle Width="14" Height="14" Fill="#E74C3C" Margin="0,0,5,0"/>
+                                    <TextBlock FontSize="11" VerticalAlignment="Center" Foreground="#555">
+                                        <Run Text="Low (&lt;50%)"/>
+                                    </TextBlock>
+                                </StackPanel>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+
+                    <!-- Configuration Used -->
+                    <Border Background="White" 
+                            BorderBrush="#BDC3C7" 
+                            BorderThickness="1" 
+                            CornerRadius="5" 
+                            Padding="15">
+                        <StackPanel>
+                            <TextBlock Text="Configuration Used" 
+                                       Style="{StaticResource SectionHeaderStyle}"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="*"/>
+                                    <ColumnDefinition Width="Auto"/>
+                                </Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <TextBlock Grid.Row="0" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Group Threshold:"/>
+                                <TextBlock x:Name="Level1ThresholdText" 
+                                           Grid.Row="0" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#1A1A1A"
+                                           Text="20%"/>
+
+                                <TextBlock Grid.Row="1" Grid.Column="0" 
+                                           Style="{StaticResource StatTextStyle}"
+                                           Text="Subgroup Threshold:"/>
+                                <TextBlock x:Name="Level2ThresholdText" 
+                                           Grid.Row="1" Grid.Column="1"
+                                           Style="{StaticResource StatValueStyle}"
+                                           Foreground="#1A1A1A"
+                                           Text="40%"/>
+                            </Grid>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Grid>
+        </ScrollViewer>
+
+        <!-- Buttons -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="CloseButton"
+                    Grid.Column="0"
+                    Content="Back to Configuration" 
+                    Height="40"
+                    Margin="0,0,5,0"
+                    Background="#95A5A6"
+                    Foreground="White"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="CloseButton_Click"
+                    ToolTip="Return to classification configuration"/>
+
+            <Button x:Name="ViewDetailsButton"
+                    Grid.Column="1"
+                    Content="View Details"
+                    Height="40"
+                    Margin="5,0,5,0"
+                    Background="#3498DB"
+                    Foreground="White"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="ViewDetailsButton_Click"
+                    ToolTip="View detailed classification list"/>
+
+            <Button x:Name="ConsolidateButton"
+                    Grid.Column="2"
+                    Content="Consolidate by Type"
+                    Height="40"
+                    Margin="5,0,0,0"
+                    Background="#27AE60"
+                    Foreground="White"
+                    FontSize="13"
+                    FontWeight="SemiBold"
+                    BorderThickness="0"
+                    Cursor="Hand"
+                    Click="ConsolidateButton_Click"
+                    ToolTip="Review and consolidate classifications by Family Type"/>
+        </Grid>
+    </Grid>
+</Window>
